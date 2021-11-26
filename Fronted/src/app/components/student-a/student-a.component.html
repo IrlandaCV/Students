@@ -1,0 +1,118 @@
+<div class="container-1" *ngIf="Student">
+  <h1 id="title">Registrarse</h1>
+  <div class="box">
+    <div>
+      <form #studentAForm="ngForm" (ngSubmit)="create(studentAForm)">
+        <label for="first_name">First Name</label> <br />
+        <input
+          type="text"
+          name="first_name"
+          #first_name="ngModel"
+          [(ngModel)]="Student.first_name"
+          required
+        />
+        <br />
+        <span
+          class="from_error"
+          *ngIf="first_name.touched && !first_name.valid"
+        >
+          El campo es obligatorio
+        </span>
+
+        <br />
+        <label for="last_name">Last Name</label><br />
+        <input
+          type="text"
+          name="last_name"
+          #last_name="ngModel"
+          [(ngModel)]="Student.last_name"
+          required
+        />
+        <br />
+        <span class="from_error" *ngIf="last_name.touched && !last_name.valid">
+          El campo es obligatorio
+        </span>
+        <br />
+
+        <label for="email">Email</label><br />
+        <input
+          type="email"
+          name="email"
+          #email="ngModel"
+          [(ngModel)]="Student.email"
+          required
+        />
+        <br />
+        <span class="from_error" *ngIf="email.touched && !email.valid">
+          El campo es obligatorio
+        </span>
+        <br />
+
+        <label for="cellphone">Cellphone</label><br />
+        <input
+          type="number"
+          name="cellphone"
+          #cellphone="ngModel"
+          [(ngModel)]="Student.cellphone"
+          required
+        />
+        <br />
+        <span class="from_error" *ngIf="cellphone.touched && !cellphone.valid">
+          El campo es obligatorio
+        </span>
+        <br />
+
+        <button id="create">Enviar</button>
+      </form>
+
+      <div class="row">
+        <button id="update" (click)="update()">Actualizar</button>
+        <div class="find">
+          <form #findForm="ngForm" (ngSubmit)="findById(findForm)">
+            <input
+              type="number"
+              name="byId"
+              #byId="ngModel"
+              [(ngModel)]="stringById"
+              placeholder="0"
+            />
+
+            <input id="found" type="submit" value="Encontrar" />
+          </form>
+        </div>
+        <button id="list" (click)="findAll()">Listar</button>
+      </div>
+    </div>
+
+    <div class="dashed1">
+      <h3>Registros de Estudiantes</h3>
+      <hr />
+      <table id="t1">
+        <tr>
+          <th width="250px" height="30px">Id</th>
+          <th width="90px" height="30px">studentId</th>
+          <th width="150px" height="30px">First Name</th>
+          <th width="150" height="30px">Last Name</th>
+          <th width="110px" height="30px">Email</th>
+          <th width="150px" height="30px">Cellphone</th>
+          <th width="220px" height="30px">Acciones</th>
+        </tr>
+        <tbody id="tabla registros">
+          <tr *ngFor="let stds of Students">
+            <td>{{ stds._id }}</td>
+            <td>{{ stds.studentId }}</td>
+            <td>{{ stds.first_name }}</td>
+            <td>{{ stds.last_name }}</td>
+            <td>{{ stds.email }}</td>
+            <td>{{ stds.cellphone }}</td>
+            <td>
+              <button (click)="get(stds)">Editar</button>
+              <button (click)="delete(stds._id)">Eliminar</button>
+              <button (click)="transfer($event, stds)">Transferir</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

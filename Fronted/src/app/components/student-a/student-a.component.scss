@@ -1,0 +1,68 @@
+#title {
+  font-family: Helvetica;
+  font-size: 30px;
+  color: cornflowerblue;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.76);
+  width: 100%;
+}
+
+.container-1 {
+  overflow: hidden;
+  height: 650px;
+  width: 95%;
+  margin-bottom: 20px;
+  border: 5px solid black;
+  float: left;
+  padding: 10px;
+}
+
+.box {
+  display: flex;
+}
+
+#form {
+  font-family: "Helvetica";
+  color: purple;
+  width: auto;
+  margin-right: 70px;
+}
+h3 {
+  font-family: Verdana;
+  color: rgb(175, 68, 175);
+}
+
+.dashed1 {
+  border: 4px dashed yellowgreen;
+  padding: 10px;
+  float: left;
+  margin-left: 20px;
+  width: auto;
+}
+#t1 {
+  border: 7px solid skyblue;
+  text-align: center;
+}
+tr,
+th,
+td {
+  border: 2px solid rgb(114, 114, 114);
+  font-family: "titilium";
+}
+
+.from_error {
+  font-size: 13px;
+  padding: 3px;
+  background: yellow;
+  color: black;
+  margin-left: 5px;
+}
+
+.row {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.row .find {
+  margin-top: 10px;
+}
+

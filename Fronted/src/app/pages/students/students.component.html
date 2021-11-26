@@ -1,0 +1,9 @@
+<student-a
+  (transferStudent)="getObject($event)"
+  [newStudent]="student2"
+></student-a>
+
+<student-b
+  [newStudent]="student"
+  (student2Transfered)="getObject2($event)"
+></student-b>
