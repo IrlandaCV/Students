@@ -1,8 +1,8 @@
-"use strict"
+"use strict";
 
-const app = require('./app');
+const app = require("./app");
 const mongoose = require("mongoose");
-const port = 4200;
+const port = 4000;
 
 mongoose.Promise = global.Promise;
 mongoose

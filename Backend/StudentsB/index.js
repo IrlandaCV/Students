@@ -2,7 +2,7 @@
 
 const app = require("./app");
 const mongoose = require("mongoose");
-const port = 4300;
+const port = 4100;
 
 mongoose.Promise = global.Promise;
 mongoose

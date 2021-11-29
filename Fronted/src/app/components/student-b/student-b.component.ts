@@ -7,13 +7,15 @@ import {
   OnChanges,
 } from '@angular/core';
 import { Student } from '../../models/student.models';
-import { table2 } from '../../db/tabla2.db';
-import * as uuid from 'uuid';
+
+
+import { StudentService } from '../../services/studentB.service';
 
 @Component({
   selector: 'student-b',
   templateUrl: './student-b.component.html',
   styleUrls: ['./student-b.component.scss'],
+  providers: [StudentService],
 })
 export class StudentBComponent implements OnInit, OnChanges {
   @Output() student2Transfered = new EventEmitter();
@@ -23,57 +25,47 @@ export class StudentBComponent implements OnInit, OnChanges {
   public Students: Student[];
   public stringById: string;
 
-  constructor() {
+  constructor(private _studentService: StudentService) {
     this.Student = new Student('', 0, '', '', '', 0);
-    this.Students = table2;
+    this.Students = [];
     this.stringById = '';
+
+    this.showTable2();
   }
 
   ngOnChanges(): void {
     if (this.newStudent != null && this.newStudent != undefined) {
-      table2.push(this.newStudent);
-      this.showTable2(table2);
+      this.createTransfer(this.newStudent);
+      this.showTable2();
     }
   }
 
-  showTable2(arrayStudents: Student[]) {
-    this.Students = arrayStudents;
+  showTable2(): void {
+    this._studentService
+      .getStudents2()
+      .subscribe(({ students }: { students: Student[] }) => {
+        this.Students = students;
+      });
   }
 
   ngOnInit(): void {}
 
   /* CREAR NUEVO REGISTRO */
-  createB(form: any, formValidate = true) {
-    let studentId = 1;
-
-    table2.map((data) => {
-      studentId = data.studentId + 1;
-    });
-
-    this.Student._id = uuid.v4();
-    this.Student.studentId = studentId;
-
-    if (
-      !this.Student._id ||
-      !this.Student.studentId ||
-      !this.Student.first_name ||
-      !this.Student.last_name ||
-      !this.Student.email ||
-      !this.Student.cellphone
-    ) {
-      alert('Campos invalidos');
-      return;
-    }
-
-    table2.push(this.Student);
-
-    this.Student = new Student('', 0, '', '', '', 0);
-
-    this.showTable2(table2);
-
-    if (formValidate) {
-      form.reset();
-    }
+  createB(form: any) {
+    this._studentService.saveStudent2(this.Student).subscribe(
+      (response) => {
+        if (response) {
+          this.showTable2();
+          form.reset();
+        } else {
+          alert('Error al guardar registro');
+        }
+      },
+      (error) => {
+        console.log(<any>error);
+        alert('Campos invalidos');
+      }
+    );
   }
 
   /* EDITAR REGISTRO */
@@ -83,68 +75,78 @@ export class StudentBComponent implements OnInit, OnChanges {
 
   /* ACTUALIZAR REGISTRO */
   update() {
-    table2.map((data, index) => {
-      if (data._id == this.Student._id) {
-        table2[index] = this.Student;
+    this._studentService.updateStudent2(this.Student).subscribe(
+      (response) => {
+        this.Student = new Student('', 0, '', '', '', 0);
+        this.showTable2();
+      },
+      (err) => {
+        console.log(err);
+        alert('Error al actualizar el registro');
       }
-    });
-    this.showTable2(table2);
-
-    this.Student = new Student('', 0, '', '', '', 0);
+    );
   }
 
   /* ENCONTRAR REGISTRO */
   findById(form: any) {
-    const student = table2.find(
-      (data) => data.studentId == parseInt(this.stringById)
+    this._studentService.getStudent2(parseInt(this.stringById)).subscribe(
+      (response: Student) => {
+        this.Students.splice(0, this.Students.length);
+        this.Students.push(response);
+        form.reset();
+      },
+      (err) => {
+        console.log(err);
+        alert('Error al encontrar registro');
+      }
     );
-
-    if (student) {
-      this.showTable2([student]);
-    } else {
-      alert('Registro no encontrado');
-    }
   }
 
   /* LISTAR TODOS LOS REGISTROS */
   findAll() {
-    this.showTable2(table2);
+    this.showTable2();
   }
 
   /* BORRAR REGISTRO */
-  delete(_id: string, validate = true) {
+  delete({ studentId }: Student, validate = true) {
     if (validate) {
       if (!confirm('¿Estas seguro de borrarlo?')) return;
     }
-    table2.map((data, index) => {
-      if (data._id == _id) {
-        table2.splice(index, 1);
+
+    this._studentService.deleteStudent2(studentId).subscribe(
+      (response) => {
+        this.showTable2();
+      },
+      (err) => {
+        console.log(err);
+        alert('Error al eliminar el registro');
       }
-    });
-    this.showTable2(table2);
+    );
+
+    this.showTable2();
   }
 
   /* TRANFERIR DATOS */
   transfer(event: any, student2: Student) {
     const student2Transfered: Student = { ...student2 };
-    this.delete(student2._id, false);
+    this.delete(student2, false);
     this.student2Transfered.emit(student2Transfered);
   }
 
   /*CREAR EN TRANSFERENCIA */
-  // createInTransfer(student2: Student) {
-  //   this.Student.saveHouse2(student2).subscribe(
-  //     (response) => {
-  //       if (response) {
-  //         this.showTable2();
-  //       } else {
-  //         alert('Error al guardar');
-  //       }
-  //     },
-  //     (error) => {
-  //       console.log(<any>error);
-  //       alert('Campos invalidos');
-  //     }
-  //   );
-  // }
+  createTransfer(student: Student) {
+    this._studentService.saveStudent2(student).subscribe(
+      (response) => {
+        if (response) {
+          this.showTable2();
+        } else {
+          alert('Error al guardar');
+        }
+      },
+      (error) => {
+        console.log(<any>error);
+        alert('Campos invalidos');
+      }
+    );
+  }
 }
